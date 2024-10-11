@@ -119,6 +119,10 @@ class MarkdownConverter:
     def _convert_emphasis(self, line):
         '''convert in text code (e.g. ''only'') to markdown for bold
            or italic.
+           [ ]inline_code[ ] -> [ ]`inline_code`[ ]
+           [ ]inline_code$ -> [ ]`inline_code`$
+           ^~inline_code~[ ] -> ^`inline_code`[]
+           ^~inline_code~$ -> ^`inline_code`$
         '''
         groups = [
                   ("*", "*", "**"), # bold
