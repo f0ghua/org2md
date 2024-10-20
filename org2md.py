@@ -14,7 +14,7 @@ def read_file(filename, mode='r'):
 
 def write_file(filename, content, mode='w'):
     '''read the content of a file into lines'''
-    with open(filename, mode) as filey:
+    with open(filename, mode, encoding='utf-8') as filey:
         filey.write(content)
 
 def apply_lines(func, content):
