@@ -132,9 +132,9 @@ class MarkdownConverter:
                  ]
         for group in groups:
             left, right, new = group
-            pattern = r"(?:(?<=\s)|^)" + re.escape(left) + r"([^"+ re.escape(right) + r"]+?)" + re.escape(right) + r"(?:(?=\s)|$)"
+            pattern = r"(?:(?<=\s)|^)" + re.escape(left) + r"([^\s" + re.escape(right) + r"][^"+ re.escape(right) + r"]*?)" + re.escape(right) + r"(?:(?=\s)|$)"
             for match in re.findall(pattern, line):
-                #print("em match", match)
+                print("em match", match)
                 inner = new + match + new
                 line = line.replace(left + match + right, inner)
         return line
