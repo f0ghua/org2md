@@ -76,6 +76,7 @@ class MarkdownConverter:
            [Slurm Commands](https://slurm.schedmd.com/pdfs/summary.pdf)
            
            ![img](data/test.png) to ![](data/test.png)
+           [[file:attachment/ipv6_faq.img.39ca12b7.png]] to ![](attachment/ipv6_faq.img.39ca12b7.png)
         '''
         # External Links convert to markdown
         markup_regex = '\[\[(http[s]?://.+?)\]\[(.+?)\]\]'
@@ -85,6 +86,20 @@ class MarkdownConverter:
             url, text = match
             markdown = "[%s](%s)" %(text.strip(), url.strip())
             line = line.replace("[[%s][%s]]" % (url, text), markdown)
+
+        IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".svg"}
+        markup_regex = '\[\[file:(.+?)\]\]'
+        # First address external links
+        for match in re.findall(markup_regex, line):
+            #print("match is", match)
+            file_path = match
+            file_name = file_path.split("/")[-1]
+            file_extension = "." + file_name.split(".")[-1].lower()
+            if file_extension in IMAGE_EXTENSIONS:
+                markdown = "![%s](%s)" %(file_name.strip(), file_path.strip())
+            else:
+                markdown = "[%s](%s)" %(file_name.strip(), file_path.strip())
+            line = line.replace("[[file:%s]]" % (file_path), markdown)
 
         return line
          
@@ -134,7 +149,7 @@ class MarkdownConverter:
             left, right, new = group
             pattern = r"(?:(?<=\s)|^)" + re.escape(left) + r"([^\s" + re.escape(right) + r"][^"+ re.escape(right) + r"]*?)" + re.escape(right) + r"(?:(?=\s)|$)"
             for match in re.findall(pattern, line):
-                print("em match", match)
+                #print("em match", match)
                 inner = new + match + new
                 line = line.replace(left + match + right, inner)
         return line
