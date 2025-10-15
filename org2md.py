@@ -67,7 +67,6 @@ class MarkdownConverter:
         # if line.startswith('::-'):
         #     line = line.replace('::-', '  -', 1)
         return line
-
     def _convert_links(self, line):
         '''convert a org link to a standard markdown one.
 
@@ -79,7 +78,7 @@ class MarkdownConverter:
            [[file:attachment/ipv6_faq.img.39ca12b7.png]] to ![](attachment/ipv6_faq.img.39ca12b7.png)
         '''
         # External Links convert to markdown
-        markup_regex = '\[\[(http[s]?://.+?)\]\[(.+?)\]\]'
+        markup_regex = r'\[\[(https?://.+?)\]\[(.+?)\]\]'
         # First address external links
         for match in re.findall(markup_regex, line):
             #print("match is", match)
@@ -88,7 +87,7 @@ class MarkdownConverter:
             line = line.replace("[[%s][%s]]" % (url, text), markdown)
 
         IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".svg"}
-        markup_regex = '\[\[file:(.+?)\]\]'
+        markup_regex = r'\[\[file:(.+?)\]\]'
         # First address external links
         for match in re.findall(markup_regex, line):
             #print("match is", match)
@@ -102,7 +101,6 @@ class MarkdownConverter:
             line = line.replace("[[file:%s]]" % (file_path), markdown)
 
         return line
-         
 
     def _convert_headers(self, line):
         '''convert headers to markdown, e.g
@@ -110,7 +108,7 @@ class MarkdownConverter:
            This function should be handled by the apply_lines wrapper.
         '''
         if line.startswith('*'):
-            markup_regex = '\*+[ ]+[^*]+'
+            markup_regex = r'\*+[ ]+[^*]+'
             if not re.match(markup_regex, line):
                 return line
             header = line.split(" ")[0]
@@ -118,16 +116,14 @@ class MarkdownConverter:
             line = line.replace('*', "#", len(header))
         return line
 
-
     def _convert_codeblocks(self, line):
-        '''convert source blocks (#+begin_src c #+end_src) to ```
-        '''
+        '''convert source blocks (#+begin_src c #+end_src) to ```'''
         code = "```"
         if line.startswith("#+begin_src"):
-             lang = (line.replace("#+begin_src", "").strip())
-             if lang:
-                 code = "%s%s\n" %(code, lang)
-             line = code
+            lang = (line.replace("#+begin_src", "").strip())
+            if lang:
+                code = "%s%s\n" % (code, lang)
+            line = code
         line = line.replace("#+end_src", "```")
         return line
 
